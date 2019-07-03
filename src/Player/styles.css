@@ -12,6 +12,7 @@
     --paletteColor9: #ffaf7b;
     --paletteColor10: #f1710f;
     --paletteColor11: #ff7a69;
+    --paletteColor12: #333333;
 
     --filledProgressBar: 0%;
     --backgroundFontSize: 6vw;
@@ -79,6 +80,7 @@
                 background: rgba(0, 0, 0, 0.1);
 
                 & .progress {
+                    outline: 1px solid var(--paletteColor12);
                     flex: 10;
                     position: relative;
                     display: flex;
