@@ -60,6 +60,11 @@ export const Player = () => {
         videoRef.current.currentTime = scrubTime;
     };
 
+    /**
+     * TODO: we can use a state instead of checking fullscreenElement() by listening to
+     * `fullscreenchange` / `fullscreenerror` events. But because of various browser quirks
+     * (such as inconsistent event recipient), the solution below is easier and simpler
+     */
     const toggleFullscreen = (/* event */) => {
         let retval;
         if (!fullscreen.fullscreenElement()) {
