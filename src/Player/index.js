@@ -76,8 +76,6 @@ export const Player = () => {
 
     const playControl = isPlaying ? <>&#10074;&#10074;</> : <>&#9654;</>;
 
-    console.log(progress);
-
     return (
         <div className = 'player'>
             <video
