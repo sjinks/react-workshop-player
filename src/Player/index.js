@@ -131,7 +131,7 @@ export const Player = () => {
                 <div
                     className = 'progress'
                     onClick = { scrub }
-                    onMouseMoveCapture = { (event) => event.nativeEvent.buttons && scrub(event) /* we can move `event.nativeEvent.buttons` check to `scribe` and get rif od a closure */ }>
+                    onMouseMoveCapture = { (event) => event.nativeEvent.buttons && scrub(event) /* we can move `event.nativeEvent.buttons` check to `scrub()` and get rid of a closure */ }>
                     <div
                         className = 'filled'
                         style = {{
