@@ -24,10 +24,10 @@ export const Player = () => {
 
     /* Включаем или выключаем проигрывание видео. */
     const togglePlay = () => {
-        const method = videoRef.current.paused ? 'play' : 'pause';
+        const method = isPlaying ? 'pause' : 'play';
 
         videoRef.current[ method ]();
-        setIsPlaying(method === 'play');
+        setIsPlaying(!isPlaying);
     };
 
     /* Прокручиваем прогресс проигрывания. */
