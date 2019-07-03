@@ -12,6 +12,7 @@ export const Player = () => {
     const [ isPlaying, setIsPlaying ] = useState(false);
     const [ progress, setProgress ] = useState(0);
     const [ volume, setVolume ] = useState(0.75);
+    const [ playbackSpeed, setPlaybackSpeed ] = useState(1);
 
     /**
      * Создаём реф для элемента video.
@@ -66,6 +67,13 @@ export const Player = () => {
       const value = target.value;
       setVolume(value);
       videoRef.current.volume = value;
+    };
+
+    const playbackSpeedChange = (event) => {
+      const { target } = event;
+      const value = target.value;
+      setPlaybackSpeed(value);
+      videoRef.current.playbackRate = value;
     };
 
     /**
@@ -149,6 +157,8 @@ export const Player = () => {
                     name = 'playbackRate'
                     step = '0.1'
                     type = 'range'
+                    value = { playbackSpeed }
+                    onChange = { playbackSpeedChange }
                 />
                 <button
                     data-skip = '-10'
