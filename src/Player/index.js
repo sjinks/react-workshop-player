@@ -118,6 +118,7 @@ export const Player = () => {
     }, []);
 
     const playControl = isPlaying ? <>&#10074;&#10074;</> : <>&#9654;</>;
+    const playLabel   = isPlaying ? 'Pause' : 'Play';
 
     return (
         <div className = 'player' ref={ playerRef }>
@@ -130,6 +131,10 @@ export const Player = () => {
             <div className = 'controls'>
                 <div
                     className = 'progress'
+                    role = "progressbar"
+                    aria-valuenow = { `${progress}%` }
+                    aria-valuemin = "0%"
+                    aria-valuemax = "100%"
                     onClick = { scrub }
                     onMouseMoveCapture = { (event) => event.nativeEvent.buttons && scrub(event) /* we can move `event.nativeEvent.buttons` check to `scrub()` and get rid of a closure */ }>
                     <div
@@ -140,6 +145,7 @@ export const Player = () => {
                     />
                 </div>
                 <button
+                    aria-label = { playLabel }
                     title = 'Toggle Play'
                     onClick = { togglePlay }>
                     {playControl}
@@ -151,6 +157,11 @@ export const Player = () => {
                     name = 'volume'
                     step = '0.05'
                     type = 'range'
+                    role = 'slider'
+                    aria-valuenow = { volume }
+                    aria-valuemin = '0'
+                    aria-valuemax = '1'
+                    aria-label = 'Current volume'
                     value = { volume }
                     onChange = { handleSliderChange }
                 />
@@ -161,20 +172,27 @@ export const Player = () => {
                     name = 'playbackRate'
                     step = '0.1'
                     type = 'range'
+                    role = 'slider'
+                    aria-valuenow = { playbackSpeed }
+                    aria-valuemin = '0.5'
+                    aria-valuemax = '2'
+                    aria-label = 'Current playback rate'
                     value = { playbackSpeed }
                     onChange = { handleSliderChange }
                 />
                 <button
+                    aria-label = 'Go 10 seconds backwards'
                     data-skip = '-10'
                     onClick = { skip }>
                     « 10s
                 </button>
                 <button
+                    aria-label = 'Go 25 seconds forward'
                     data-skip = '25'
                     onClick = { skip }>
                     25s »
                 </button>
-                <button hidden={ !fullscreen.isSupported } onClick={ toggleFullscreen }>&#10021;</button>
+                <button hidden={ !fullscreen.isSupported } onClick={ toggleFullscreen } aria-label='Toggle fullscreen mode'>&#10021;</button>
             </div>
         </div>
     );
