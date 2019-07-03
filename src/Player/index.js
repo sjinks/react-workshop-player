@@ -9,7 +9,6 @@ import video from './video.mp4';
 export const Player = () => {
     const [ isPlaying, setIsPlaying ] = useState(false);
     const [ progress, setProgress ] = useState(0);
-    const [ isProgressCapturing, setIsProgressCapturing ] = useState(false);
 
     /**
      * Создаём реф для элемента video.
@@ -88,9 +87,7 @@ export const Player = () => {
                 <div
                     className = 'progress'
                     onClick = { scrub }
-                    onMouseDown = { () => setIsProgressCapturing(true) }
-                    onMouseMove = { (event) => isProgressCapturing && scrub(event) }
-                    onMouseUp = { () => setIsProgressCapturing(false) }>
+                    onMouseMoveCapture = { (event) => event.nativeEvent.buttons && scrub(event) /* we can move `event.nativeEvent.buttons` check to `scribe` and get rif od a closure */ }>
                     <div
                         className = 'filled'
                         style = {{
