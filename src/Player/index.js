@@ -1,6 +1,8 @@
 // Core
 import React, { useState, useRef, useEffect } from 'react';
 
+import fullscreen from './fullscreen.js';
+
 // Instruments
 import './styles.css';
 
@@ -16,6 +18,7 @@ export const Player = () => {
      * С его помощью мы сможем управлять видеоплеером в явном виде.
      */
     const videoRef = useRef(null);
+    const playerRef = useRef(null);
 
     /* Включаем или выключаем проигрывание видео. */
     const togglePlay = () => {
@@ -57,6 +60,22 @@ export const Player = () => {
         videoRef.current.currentTime = scrubTime;
     };
 
+    const toggleFullscreen = (/* event */) => {
+        let retval;
+        if (!fullscreen.fullscreenElement()) {
+            // If we make the video itself fullscreen, our controls will be lost. Making the entire player fullscreen instead.
+            retval = fullscreen.requestFullscreen(playerRef.current);
+        } else {
+            retval = fullscreen.exitFullscreen();
+        }
+
+        // Some browsers return a Promise, some don't. If we have a Promise, catch and swallow any errors
+        if ('catch' in retval) {
+            /* FIXME: ignore an error in the production mode */
+            retval.catch((e) => { console.error(e); });
+        }
+    };
+
     /* Добавляем слушатель вкл/выкл видео по нажатию на пробел. */
     useEffect(() => {
         const handler = (event) => {
@@ -76,7 +95,7 @@ export const Player = () => {
     const playControl = isPlaying ? <>&#10074;&#10074;</> : <>&#9654;</>;
 
     return (
-        <div className = 'player'>
+        <div className = 'player' ref={ playerRef }>
             <video
                 ref = { videoRef }
                 src = { video }
@@ -126,7 +145,7 @@ export const Player = () => {
                     onClick = { skip }>
                     25s »
                 </button>
-                <button>&#10021;</button>
+                <button hidden={ !fullscreen.isSupported } onClick={ toggleFullscreen }>&#10021;</button>
             </div>
         </div>
     );
