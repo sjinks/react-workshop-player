@@ -62,18 +62,22 @@ export const Player = () => {
         videoRef.current.currentTime = scrubTime;
     };
 
-    const volumeChange = (event) => {
-      const { target } = event;
-      const value = target.value;
-      setVolume(value);
-      videoRef.current.volume = value;
-    };
+    const handleSliderChange = (event) => {
+        const { name, value } = event.target;
+        videoRef.current[name] = value;
+        switch (name) {
+            case 'volume':
+                setVolume(value);
+                break;
 
-    const playbackSpeedChange = (event) => {
-      const { target } = event;
-      const value = target.value;
-      setPlaybackSpeed(value);
-      videoRef.current.playbackRate = value;
+            case 'playbackRate':
+                setPlaybackSpeed(value);
+                break;
+
+            default:
+                console.error(`handleSliderChange() needs to be updated to handle ${name}`);
+                break;
+        }
     };
 
     /**
@@ -148,7 +152,7 @@ export const Player = () => {
                     step = '0.05'
                     type = 'range'
                     value = { volume }
-                    onChange = { volumeChange }
+                    onChange = { handleSliderChange }
                 />
                 <input
                     className = 'slider'
@@ -158,7 +162,7 @@ export const Player = () => {
                     step = '0.1'
                     type = 'range'
                     value = { playbackSpeed }
-                    onChange = { playbackSpeedChange }
+                    onChange = { handleSliderChange }
                 />
                 <button
                     data-skip = '-10'
