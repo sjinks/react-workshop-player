@@ -11,6 +11,7 @@ import video from './video.mp4';
 export const Player = () => {
     const [ isPlaying, setIsPlaying ] = useState(false);
     const [ progress, setProgress ] = useState(0);
+    const [ volume, setVolume ] = useState(0.75);
 
     /**
      * Создаём реф для элемента video.
@@ -58,6 +59,13 @@ export const Player = () => {
             * videoRef.current.duration;
 
         videoRef.current.currentTime = scrubTime;
+    };
+
+    const volumeChange = (event) => {
+      const { target } = event;
+      const value = target.value;
+      setVolume(value);
+      videoRef.current.volume = value;
     };
 
     /**
@@ -131,6 +139,8 @@ export const Player = () => {
                     name = 'volume'
                     step = '0.05'
                     type = 'range'
+                    value = { volume }
+                    onChange = { volumeChange }
                 />
                 <input
                     className = 'slider'
