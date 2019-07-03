@@ -1,6 +1,8 @@
 // Core
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, createRef } from 'react';
 
+import Video from './Video.js';
+import VideoControls from './VideoControls.js';
 import fullscreen from './fullscreen.js';
 
 // Instruments
@@ -19,7 +21,7 @@ export const Player = () => {
      * Реф в React — это прямой доступ к html-элементу.
      * С его помощью мы сможем управлять видеоплеером в явном виде.
      */
-    const videoRef = useRef(null);
+    const videoRef = createRef();
     const playerRef = useRef(null);
 
     /* Включаем или выключаем проигрывание видео. */
@@ -47,19 +49,21 @@ export const Player = () => {
 
     /* Устанавливаем прогресс видео указателем мыши. */
     const scrub = (event) => {
-        /**
-         * offsetX — свойство события мыши. Возвращает расстояние от «начала» элемента до позиции указателя мыши по координате X.
-         * nativeEvent — ссылка на нативное, НЕ кросс-браузерное событие.
-         *
-         * offsetWidth — возвращает ширину элемента.
-         * О разнице между event.target и event.currentTarget: https://github.com/facebook/react/issues/5733#issuecomment-167188516.
-         */
+        if (event.buttons || event.type === 'click') {
+            /**
+             * offsetX — свойство события мыши. Возвращает расстояние от «начала» элемента до позиции указателя мыши по координате X.
+             * nativeEvent — ссылка на нативное, НЕ кросс-браузерное событие.
+             *
+             * offsetWidth — возвращает ширину элемента.
+             * О разнице между event.target и event.currentTarget: https://github.com/facebook/react/issues/5733#issuecomment-167188516.
+             */
 
-        const scrubTime
-            = event.nativeEvent.offsetX / event.currentTarget.offsetWidth
-            * videoRef.current.duration;
+            const scrubTime
+                = event.nativeEvent.offsetX / event.currentTarget.offsetWidth
+                * videoRef.current.duration;
 
-        videoRef.current.currentTime = scrubTime;
+            videoRef.current.currentTime = scrubTime;
+        }
     };
 
     const handleSliderChange = (event) => {
@@ -117,83 +121,25 @@ export const Player = () => {
         /* Эффект выполняется один раз, потому что вторым аргументом мы передали []. */
     }, []);
 
-    const playControl = isPlaying ? <>&#10074;&#10074;</> : <>&#9654;</>;
-    const playLabel   = isPlaying ? 'Pause' : 'Play';
-
     return (
         <div className = 'player' ref={ playerRef }>
-            <video
+            <Video
                 ref = { videoRef }
                 src = { video }
-                onClick = { togglePlay }
-                onTimeUpdate = { handleProgress }
+                handlePlay = { togglePlay }
+                handleProgressChange = { handleProgress }
             />
-            <div className = 'controls'>
-                <div
-                    className = 'progress'
-                    role = "progressbar"
-                    aria-valuenow = { `${progress}%` }
-                    aria-valuemin = "0%"
-                    aria-valuemax = "100%"
-                    onClick = { scrub }
-                    onMouseMoveCapture = { (event) => event.nativeEvent.buttons && scrub(event) /* we can move `event.nativeEvent.buttons` check to `scrub()` and get rid of a closure */ }>
-                    <div
-                        className = 'filled'
-                        style = {{
-                            '--filledProgressBar': `${progress}%`,
-                        }}
-                    />
-                </div>
-                <button
-                    aria-label = { playLabel }
-                    title = 'Toggle Play'
-                    onClick = { togglePlay }>
-                    {playControl}
-                </button>
-                <input
-                    className = 'slider'
-                    max = '1'
-                    min = '0'
-                    name = 'volume'
-                    step = '0.05'
-                    type = 'range'
-                    role = 'slider'
-                    aria-valuenow = { volume }
-                    aria-valuemin = '0'
-                    aria-valuemax = '1'
-                    aria-label = 'Current volume'
-                    value = { volume }
-                    onChange = { handleSliderChange }
-                />
-                <input
-                    className = 'slider'
-                    max = '2'
-                    min = '0.5'
-                    name = 'playbackRate'
-                    step = '0.1'
-                    type = 'range'
-                    role = 'slider'
-                    aria-valuenow = { playbackSpeed }
-                    aria-valuemin = '0.5'
-                    aria-valuemax = '2'
-                    aria-label = 'Current playback rate'
-                    value = { playbackSpeed }
-                    onChange = { handleSliderChange }
-                />
-                <button
-                    aria-label = 'Go 10 seconds backwards'
-                    data-skip = '-10'
-                    onClick = { skip }>
-                    « 10s
-                </button>
-                <button
-                    aria-label = 'Go 25 seconds forward'
-                    data-skip = '25'
-                    onClick = { skip }>
-                    25s »
-                </button>
-                <button hidden={ !fullscreen.isSupported } onClick={ toggleFullscreen } aria-label='Toggle fullscreen mode'>&#10021;</button>
-            </div>
+            <VideoControls
+                progress = { progress }
+                volume = { volume }
+                playbackSpeed = { playbackSpeed }
+                handleScrub = { scrub }
+                handlePlay = { togglePlay }
+                handleVolumeChange = { handleSliderChange }
+                handlePlaybackSpeedChange = { handleSliderChange }
+                handleSkip = { skip }
+                handleFullscreen = { toggleFullscreen }
+            />
         </div>
     );
 };
